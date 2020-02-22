@@ -9,6 +9,7 @@ Illustrative example
 Let's say we have table bulk_test.tab_items with id_item as PK, partitioned by date_item, and filled by some test data. 
 We want to delete rows with matching id_item and date_item in table bulk_test.tab_items_to_delete. Table bulk_test.tab_items_to_delete has ca. 1/3 of rows from bulk_test.tab_items.
 Instead of Oracle's BULK COLLECT clause we aggregate data into arrays in little tricky way:
+
     WITH d AS (
     -- gather data to be deleted
     SELECT id_item, date_item
@@ -33,6 +34,7 @@ Query above returns recordset consisting of rows with small arrays with data nee
 
 
 Instead of Oracle's FORALL statement we access the array like a table:
+
     DELETE FROM bulk_test.tab_items
      WHERE (id_item, date_item) IN (SELECT id_item, date_item FROM unnest(_arr));
 
@@ -44,11 +46,12 @@ Performance comparision for DELETE
 I created test_bulk schema in my Postgres database to test above mentioned ideas. Table tab_items is in file 01_data.sql. Table tab_items_to_delete and functions get_items_to_delete_bulk and delete_items_bulk are in file 02_to_delete.sql. Table tab_items is filled with ca. 15M records. Table tab_items_to_delete is filled with ca. 5M records. 
 Bash file delete_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file delete_solo.sh runs traditional approach - deleting by one record.
 Table below lists execution times for bulk deleting variations and deleting by one record:
- command            |  execution time
-delete_bulk.sh 1000 |      4 min 20 s
-delete_bulk.sh 100  |     10 min 04 s
-delete_bulk.sh 10   | 1 h 04 min 03 s
-delete_solo.sh      | 8 h 57 min 10 s
+
+  command            |  execution time
+ delete_bulk.sh 1000 |      4 min 20 s
+ delete_bulk.sh 100  |     10 min 04 s
+ delete_bulk.sh 10   | 1 h 04 min 03 s
+ delete_solo.sh      | 8 h 57 min 10 s
 
 As expected arrays with more items are significantly faster then arrays with fewer items. 
 Bulk variations are significantly faster then deleting by one record.
@@ -57,11 +60,12 @@ Performance comparision for UPDATE
 Again in test_bulk schema in my Postgres database. Table tab_items is in file 01_data.sql. Table tab_items_to_update and functions get_items_to_update_bulk and update_items_bulk are in file 03_to_update.sql. Table tab_items is filled with ca. 15M records. Table tab_items_to_update is filled with ca. 5M records. 
 Bash file update_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file update_solo.sh runs traditional approach - updating by one record.
 Table below lists execution times for bulk updating variations and updating by one record.
- command            |  execution time
-update_bulk.sh 1000 |      5 min 05 s
-update_bulk.sh 100  |     10 min 56 s
-update_bulk.sh 10   | 1 h 03 min 59 s
-update_solo.sh      | 8 h 45 min 23 s
+
+  command            |  execution time
+ update_bulk.sh 1000 |      5 min 05 s
+ update_bulk.sh 100  |     10 min 56 s
+ update_bulk.sh 10   | 1 h 03 min 59 s
+ update_solo.sh      | 8 h 45 min 23 s
 
 As expected arrays with more items are significantly faster then arrays with fewer items. 
 Bulk variations are significantly faster then updating by one record.
