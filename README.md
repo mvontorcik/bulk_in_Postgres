@@ -6,6 +6,7 @@ Oracle has BULK COLLECT clause and FORALL statement. I search through Postgres d
 In Postgres rows can be aggregated into arrays, arrays can be sent as input parameters, and arrays can be accessed like tables. It is enough to implement something like Oracle's bulk operations.
 
 Illustrative example
+
 Let's say we have table bulk_test.tab_items with id_item as PK, partitioned by date_item, and filled by some test data. 
 We want to delete rows with matching id_item and date_item in table bulk_test.tab_items_to_delete. Table bulk_test.tab_items_to_delete has ca. 1/3 of rows from bulk_test.tab_items.
 Instead of Oracle's BULK COLLECT clause we aggregate data into arrays in little tricky way:
@@ -43,6 +44,7 @@ Instead of Oracle's FORALL statement we access the array like a table:
      WHERE id_item IN (SELECT id_item FROM unnest(_arr));
 
 Performance comparision for DELETE
+
 I created test_bulk schema in my Postgres database to test above mentioned ideas. Table tab_items is in file 01_data.sql. Table tab_items_to_delete and functions get_items_to_delete_bulk and delete_items_bulk are in file 02_to_delete.sql. Table tab_items is filled with ca. 15M records. Table tab_items_to_delete is filled with ca. 5M records. 
 Bash file delete_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file delete_solo.sh runs traditional approach - deleting by one record.
 Table below lists execution times for bulk deleting variations and deleting by one record:
@@ -58,6 +60,7 @@ As expected arrays with more items are significantly faster then arrays with few
 Bulk variations are significantly faster then deleting by one record.
 
 Performance comparision for UPDATE
+
 Again in test_bulk schema in my Postgres database. Table tab_items is in file 01_data.sql. Table tab_items_to_update and functions get_items_to_update_bulk and update_items_bulk are in file 03_to_update.sql. Table tab_items is filled with ca. 15M records. Table tab_items_to_update is filled with ca. 5M records. 
 Bash file update_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file update_solo.sh runs traditional approach - updating by one record.
 Table below lists execution times for bulk updating variations and updating by one record.
