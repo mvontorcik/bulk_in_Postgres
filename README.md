@@ -47,11 +47,12 @@ I created test_bulk schema in my Postgres database to test above mentioned ideas
 Bash file delete_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file delete_solo.sh runs traditional approach - deleting by one record.
 Table below lists execution times for bulk deleting variations and deleting by one record:
 
-  command            |  execution time
- delete_bulk.sh 1000 |      4 min 20 s
- delete_bulk.sh 100  |     10 min 04 s
- delete_bulk.sh 10   | 1 h 04 min 03 s
- delete_solo.sh      | 8 h 57 min 10 s
+|  command            |  execution time |
+| ------------------- |:-------------:|
+| delete_bulk.sh 1000 |      4 min 20 s |
+| delete_bulk.sh 100  |     10 min 04 s |
+| delete_bulk.sh 10   | 1 h 04 min 03 s |
+| delete_solo.sh      | 8 h 57 min 10 s |
 
 As expected arrays with more items are significantly faster then arrays with fewer items. 
 Bulk variations are significantly faster then deleting by one record.
@@ -61,11 +62,12 @@ Again in test_bulk schema in my Postgres database. Table tab_items is in file 01
 Bash file update_bulk.sh runs bulk implementation with parameter MAX_ARRAY_SIZE. Bash file update_solo.sh runs traditional approach - updating by one record.
 Table below lists execution times for bulk updating variations and updating by one record.
 
-  command            |  execution time
- update_bulk.sh 1000 |      5 min 05 s
- update_bulk.sh 100  |     10 min 56 s
- update_bulk.sh 10   | 1 h 03 min 59 s
- update_solo.sh      | 8 h 45 min 23 s
+|  command            |  execution time|
+| ------------------- |:-------------:|
+| update_bulk.sh 1000 |      5 min 05 s|
+| update_bulk.sh 100  |     10 min 56 s|
+| update_bulk.sh 10   | 1 h 03 min 59 s|
+| update_solo.sh      | 8 h 45 min 23 s|
 
 As expected arrays with more items are significantly faster then arrays with fewer items. 
 Bulk variations are significantly faster then updating by one record.
